@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const path = require('path');
+const helmet = require("helmet");
+
 
 // Ajout des routes
 const saucesRoutes = require('./routes/sauce');
@@ -34,9 +36,12 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
     next();
 });
-
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'same-origin' }
+}));
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+// exportation de l'application express
 module.exports = app;
