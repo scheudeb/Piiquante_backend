@@ -37,7 +37,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use(helmet({
-    crossOriginResourcePolicy: { policy: 'same-origin' }
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
