@@ -15,5 +15,5 @@ const userSchema = mongoose.Schema({
 // indique que userSchema doit prendre en compte la variable uniqueValidator
 userSchema.plugin(uniqueValidator);
 
-// eportation du schema pour l'appeler dans le controller user.js
+// exportation du schema pour l'appeler dans le controller user.js
 module.exports = mongoose.model('User', userSchema);

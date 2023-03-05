@@ -18,11 +18,10 @@ const app = express();
 app.use(express.json());
 
 // Connexion à la base de données 
-mongoose.connect('mongodb+srv://debow:L6WyDdFmEHsR3IBD@cluster0.mendpyn.mongodb.net/test',
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
