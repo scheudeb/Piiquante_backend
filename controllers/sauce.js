@@ -130,7 +130,7 @@ exports.likeSauce = (req, res, next) => {
                     sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
                         .then(() => res.status(200).json({ message: 'Dislike supprimé !' }))
                         .catch(error => res.status(400).json({ error }));
-                } else { // Si l'utilisateur a déjà liké la sauce, supprimer le like
+                } else { // Si l'utilisateur a déjà disliké la sauce, supprimer le like
                     sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
                         .then(() => res.status(200).json({ message: 'Dislike supprimé !' }))
                         .catch(error => res.status(400).json({ error }));
