@@ -1,7 +1,5 @@
 // Ajout d'Express
 const express = require('express');
-// Ajout de Mongoose pour la base de données
-const mongoose = require('mongoose');
 
 const path = require('path');
 const helmet = require("helmet");

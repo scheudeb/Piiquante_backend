@@ -10,10 +10,6 @@ exports.createSauce = (req, res, next) => {
         ...sauceObject,
         userId: req.auth.userId,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        likes: 0,
-        dislikes: 0,
-        usersLiked: [],
-        usersDisliked: [],
     });
 
     sauceCreate.save()
@@ -72,7 +68,7 @@ exports.modifySauce = (req, res, next) => {
     // Vérifie que l'utilisateur actuel est bien le propriétaire actuel de la sauce
     sauce.findOne({ _id: req.params.id })
         .then(sauce => {
-            if (sauce.userId !== req.userId) {
+            if (sauce.userId !== req.auth.userId) {
                 return res.status(401).json({ error: "Non autorisé" });
             }
             // Si l'utilisateur actuel est le propriétaire de la sauce, modifier la sauce
