@@ -101,19 +101,39 @@ exports.likeSauce = (req, res, next) => {
 
             if (req.body.like === 1) {  // J'aime
                 if (!alreadyLiked) { // Si l'utilisateur n'a pas déjà liké la sauce
-                    sauce.updateOne({ _id: req.params.id }, { $push: { usersLiked: userId }, $inc: { likes: +1 } })
-                        .then(() => res.status(200).json({ message: 'Like ajouté !' }))
-                        .catch(error => res.status(400).json({ error }));
-                } else {
-                    res.status(400).json({ error: "Vous avez déjà liké cette sauce !" });
+                    if (alreadyDisliked) { // Si l'utilisateur a déjà disliké la sauce, annuler le dislike
+                        sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
+                            .then(() => {
+                                sauce.updateOne({ _id: req.params.id }, { $push: { usersLiked: userId }, $inc: { likes: +1 } })
+                                    .then(() => res.status(200).json({ message: 'Like ajouté !' }))
+                                    .catch(error => res.status(400).json({ error }));
+                            })
+                            .catch(error => res.status(400).json({ error }))
+                    } else { // Ajouter le like
+                        sauce.updateOne({ _id: req.params.id }, { $push: { usersLiked: userId }, $inc: { likes: +1 } })
+                            .then(() => res.status(200).json({ message: 'Like ajouté !' }))
+                            .catch(error => res.status(400).json({ error }));
+                    }
+                } else { // Si l'utilisateur a déjà liké la sauce, supprimer le like
+                    sauce.updateOne({ _id: req.params.id }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } })
+                        .then(() => res.status(200).json({ message: 'Like supprimé !' }))
+                        .catch(error => res.status(400).json({ error }))
                 }
+
+
             } else if (req.body.like === -1) {  // Je n'aime pas
                 if (!alreadyDisliked) { // Si l'utilisateur n'a pas déjà disliké la sauce
                     sauce.updateOne({ _id: req.params.id }, { $push: { usersDisliked: userId }, $inc: { dislikes: +1 } })
                         .then(() => res.status(200).json({ message: 'Dislike ajouté !' }))
                         .catch(error => res.status(400).json({ error }));
-                } else {
-                    res.status(400).json({ error: "Vous avez déjà disliké cette sauce !" });
+                } else if (req.body.like === 0) { // Si l'utilisateur a déjà disliké la sauce et souhaite changer son avis
+                    sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
+                        .then(() => res.status(200).json({ message: 'Dislike supprimé !' }))
+                        .catch(error => res.status(400).json({ error }));
+                } else { // Si l'utilisateur a déjà liké la sauce, supprimer le like
+                    sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
+                        .then(() => res.status(200).json({ message: 'Dislike supprimé !' }))
+                        .catch(error => res.status(400).json({ error }));
                 }
             } else {  // Je n'ai plus d'avis
                 if (alreadyLiked) { // Si l'utilisateur a déjà liké la sauce
